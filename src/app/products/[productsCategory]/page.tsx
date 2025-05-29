@@ -4,17 +4,31 @@ import { ProductsGrid } from "@/app/products/[productsCategory]/components/Produ
 import { ProductsPagination } from "@/app/products/[productsCategory]/components/ProductsPagination";
 import { ProductsSorting } from "@/app/products/[productsCategory]/components/ProductsSorting";
 import { getProductsData } from "@/app/products/hooks/getProductsData";
+import { notFound } from "next/navigation";
 
 interface ProductsPageProps {
-  params: { productsCategory: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ productsCategory: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ProductsPage(props: ProductsPageProps) {
-  const resolvedParams = await props.params;
+export async function generateMetadata({ params }: ProductsPageProps) {
+  const resolvedParams = await params;
+  const category = resolvedParams.productsCategory || "Товари";
+  return {
+    title: `${category.charAt(0).toUpperCase() + category.slice(1)} | Polytech`,
+  };
+}
+
+export default async function ProductsPage({ params, searchParams }: ProductsPageProps) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  if (!resolvedParams?.productsCategory) {
+    notFound();
+  }
+
   const data = await getProductsData({
-    params: { productsCategory: resolvedParams.productsCategory },
-    searchParams: props.searchParams,
+    params: resolvedParams,
+    searchParams: resolvedSearchParams,
   });
 
   const totalPages = Math.ceil(data.initialTotal / data.productsPerPage);
@@ -31,7 +45,6 @@ export default async function ProductsPage(props: ProductsPageProps) {
         initialProductsPerPage={data.productsPerPage}
         initialSortBy={data.sortBy}
       />
-
       <div className="flex flex-col w-full gap-4">
         <ProductsSorting
           initialSortBy={data.sortBy}

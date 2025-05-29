@@ -53,6 +53,8 @@ export const ProductsPagination = ({
 
   const pages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
+  if (totalPages <= 1) return null;
+
   return (
     <Pagination>
       <PaginationContent>

@@ -58,6 +58,8 @@ export default function ProfileForm({ profileData }: ProfileFormProps) {
         city: values.city ?? "",
         address: values.address ?? "",
         post_office: values.post_office ?? "",
+        first_name: values.first_name ?? "",
+        last_name: values.last_name ?? "",
       });
       toast.success("Профіль успішно оновлено!");
     } catch (error: unknown) {
