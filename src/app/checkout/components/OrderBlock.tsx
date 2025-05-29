@@ -28,7 +28,7 @@ export const OrderBlock = () => {
       <div className="space-y-2 bg-[#EDEFF5] p-6">
         <h2 className="text-sm text-light-gray">Товар</h2>
         {items.map((item) => (
-          <div key={item.id} className="flex gap-2 p-3 text-sm bg-white rounded-lg">
+          <div key={item.id} className="flex items-center gap-2 p-3 text-sm bg-white rounded-lg">
             <Image
               src={item.image_url}
               alt={item.name}
@@ -40,6 +40,7 @@ export const OrderBlock = () => {
               <span>{item.name}</span>
               <span className="text-light-gray">x {item.quantity}</span>
             </div>
+            <span className="ml-auto">{formatPrice(item.price)}</span>
           </div>
         ))}
 

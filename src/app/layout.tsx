@@ -21,14 +21,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>PolyTech</title>
+        <meta name="description" content="A marketplace for buying and selling products" />
+        <meta name="keywords" content="marketplace, buy, sell, products, ecommerce" />
+        <link rel="icon" href="/images/smallLogo.png" />
+      </head>
       <body className={`antialiased bg-primary-bg ${inter.className}`}>
         <Provider store={store}>
           <Header />
           <div className="container max-w-[1300px] z-10 flex flex-col items-center justify-center mx-auto">
             <Breadcrumb />
             {children}
-            <Footer />
           </div>
+          <Footer />
           <Toaster richColors />
         </Provider>
       </body>

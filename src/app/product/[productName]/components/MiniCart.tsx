@@ -67,10 +67,6 @@ export const MiniCart = ({ cartItem, setInCart, setQuantity }: MiniCartProps) =>
           Купити
         </Button>
       </div>
-      <div className="flex flex-col gap-4 mt-4">
-        <span className="text-xs text-light-gray">Гарантовано безпечне оформлення замовлення</span>
-        <Image src={"/images/paymants.png"} alt="paymants" width={300} height={28} />
-      </div>
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 
 const promoImagesPath = "/images/promoBlock/";
@@ -46,7 +45,7 @@ export const PromoImagesBlock = () => {
             >
               <h3 className="font-bold">Sony Playstation 5</h3>
               <p className="font-bold text-light-green">ВІД 23 679₴</p>
-              <Link href="#" className="mt-6 text-xs underline">
+              <Link href="/products/Ігрові%20консолі" className="mt-6 text-xs underline">
                 ДІЗНАЙТЕСЯ ЗАРАЗ
               </Link>
             </div>
@@ -62,7 +61,7 @@ export const PromoImagesBlock = () => {
               <h3 className="font-bold text-white">
                 Logitech Bluetooth <br /> <span className="text-yellow-500">Keyboard</span>
               </h3>
-              <Link href="#" className="mt-6 text-xs text-white">
+              <Link href="/products/Аксесуари" className="mt-6 text-xs text-white">
                 Найкраще для всіх пристроїв
               </Link>
             </div>
@@ -83,9 +82,11 @@ export const PromoImagesBlock = () => {
             <h3 className="text-lg font-bold">
               Sport Water <br /> Resistance <br /> Watch
             </h3>
-            <Button size="sm" color="darkGray" className="mt-4">
-              Купити зараз
-            </Button>
+            <Link href="/products/Розумні%20годинники" className="text-xs text-light-gray">
+              <Button size="sm" color="darkGray" className="mt-4">
+                Купити зараз
+              </Button>
+            </Link>
           </article>
         </div>
 

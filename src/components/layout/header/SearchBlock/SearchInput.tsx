@@ -29,7 +29,11 @@ export const SearchInput = ({
   handleFocus,
 }: SearchInputProps) => {
   useEffect(() => {
-    isLoading ? nProgress.start() : nProgress.done();
+    if (isLoading) {
+      nProgress.start();
+    } else {
+      nProgress.done();
+    }
   }, [isLoading]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

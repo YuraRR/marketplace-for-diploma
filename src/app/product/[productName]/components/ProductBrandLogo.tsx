@@ -1,3 +1,4 @@
+"use client";
 import { BrandLogoResponse, fetchBrandLogo } from "@/lib/api/fetchBrandLogo";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -38,7 +39,7 @@ export const ProductBrandLogo = ({ brand }: ProductLogoProps) => {
 
   return (
     <div
-      className={`mx-auto rounded-lg max-h-[70px] max-w-[160px] transition-opacity duration-300 ${
+      className={`mx-auto rounded-lg max-h-[70px] max-w-[150px] transition-opacity duration-300 ${
         loaded ? "opacity-100" : "opacity-0"
       }`}
       style={{ width: 160, height: 60 }}

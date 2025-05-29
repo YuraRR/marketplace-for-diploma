@@ -57,13 +57,7 @@ export const CatalogButton = () => {
       className={`${isFocused ? "z-50" : "z-10"}`}
       onClick={handleButtonClick}
     >
-      <DropdownButton
-        item={catalogButtonData}
-        isFocused={isFocused}
-        setIsFocused={setIsFocused}
-        closeBackdrop={close}
-        className="border-2 border-white"
-      />
+      <DropdownButton item={catalogButtonData} isFocused={isFocused} className="border-2 border-white" />
     </div>
   );
 };

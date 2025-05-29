@@ -7,144 +7,100 @@ import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 
 export const DeliveryFormSection = ({ form }: { form: FormType }) => {
-  // Получаем начальное значение city из формы
   const initialCity = form.getValues("city");
-  const { cityRefs } = useAutocomplete("city");
+  const [currentCityRef, setCurrentCityRef] = useState<string | null>(null);
 
-  // Инициализируем currentCityRef значением из cityRefs, если city уже задано
-  const [currentCityRef, setCurrentCityRef] = useState<string | null>(
-    initialCity && cityRefs.get(initialCity) ? cityRefs.get(initialCity)! : null
+  // Автокомплит хуки
+  const cityAuto = useAutocomplete("city");
+  const addressAuto = useAutocomplete("street", currentCityRef);
+  const warehouseAuto = useAutocomplete("warehouse", currentCityRef);
+
+  // Дебаунс функции
+  const debouncedCity = useMemo(() => debounce(cityAuto.fetchSuggestions, 300), [cityAuto.fetchSuggestions]);
+  const debouncedAddress = useMemo(
+    () => debounce(addressAuto.fetchSuggestions, 300),
+    [addressAuto.fetchSuggestions]
+  );
+  const debouncedWarehouse = useMemo(
+    () => debounce(warehouseAuto.fetchSuggestions, 300),
+    [warehouseAuto.fetchSuggestions]
   );
 
-  const {
-    suggestions: citySuggestions,
-    isLoading: isLoadingCities,
-    fetchSuggestions: fetchCitySuggestions,
-    cityRefs: updatedCityRefs,
-  } = useAutocomplete("city");
-  const {
-    suggestions: addressSuggestions,
-    isLoading: isLoadingAddresses,
-    fetchSuggestions: fetchAddressSuggestions,
-  } = useAutocomplete("street", currentCityRef);
-  const {
-    suggestions: warehouseSuggestions,
-    isLoading: isLoadingWarehouses,
-    fetchSuggestions: fetchWarehouseSuggestions,
-  } = useAutocomplete("warehouse", currentCityRef);
-
-  // Дебаунс для всех автодополнений
-  const debouncedFetchCity = useMemo(
-    () => debounce((value: string) => fetchCitySuggestions(value), 300),
-    [fetchCitySuggestions]
-  );
-  const debouncedFetchAddress = useMemo(
-    () => debounce((value: string) => fetchAddressSuggestions(value), 300),
-    [fetchAddressSuggestions]
-  );
-  const debouncedFetchWarehouse = useMemo(
-    () => debounce((value: string) => fetchWarehouseSuggestions(value), 300),
-    [fetchWarehouseSuggestions]
-  );
-
-  // Обновление предложений
   useEffect(() => {
-    // Если city уже задано и currentCityRef еще не установлен, обновляем его
-    if (initialCity && !currentCityRef && updatedCityRefs.get(initialCity)) {
-      setCurrentCityRef(updatedCityRefs.get(initialCity)!);
+    if (initialCity && cityAuto.cityRefs.get(initialCity)) {
+      setCurrentCityRef(cityAuto.cityRefs.get(initialCity)!);
     }
-
-    const subscription = form.watch((value, { name }) => {
+    const sub = form.watch((value, { name }) => {
       if (name === "city") {
-        debouncedFetchCity(value.city || "");
-        const ref = updatedCityRefs.get(value.city || "");
-        if (ref) {
-          setCurrentCityRef(ref);
-        } else {
-          setCurrentCityRef(null);
-        }
+        debouncedCity(value.city || "");
+        setCurrentCityRef(cityAuto.cityRefs.get(value.city || "") || null);
       }
-      if (name === "address" && currentCityRef) {
-        debouncedFetchAddress(value.address || "");
-      }
-      if (name === "post_office" && currentCityRef) {
-        debouncedFetchWarehouse(value.post_office || "");
-      }
+      if (name === "address" && currentCityRef) debouncedAddress(value.address || "");
+      if (name === "post_office" && currentCityRef) debouncedWarehouse(value.post_office || "");
     });
-
     return () => {
-      subscription.unsubscribe();
-      debouncedFetchCity.cancel();
-      debouncedFetchAddress.cancel();
-      debouncedFetchWarehouse.cancel();
+      sub.unsubscribe();
+      debouncedCity.cancel();
+      debouncedAddress.cancel();
+      debouncedWarehouse.cancel();
     };
-  }, [
-    form,
-    initialCity,
-    currentCityRef,
-    updatedCityRefs,
-    debouncedFetchCity,
-    debouncedFetchAddress,
-    debouncedFetchWarehouse,
-  ]);
+    // eslint-disable-next-line
+  }, [form, initialCity, currentCityRef, cityAuto.cityRefs]);
+
+  // Универсальный рендер поля
+  const renderField = (
+    name: "city" | "address" | "post_office",
+    label: string,
+    placeholder: string,
+    suggestions: string[],
+    isLoading: boolean,
+    onInputChange: (v: string) => void,
+    extra?: { onSelect?: (v: string) => void }
+  ) => (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <AutocompleteInput
+          field={{ ...field, value: field.value ?? "" }}
+          form={{
+            setValue: (name: string, value: string) =>
+              form.setValue(name as Parameters<typeof form.setValue>[0], value),
+          }}
+          label={label}
+          placeholder={placeholder}
+          suggestions={suggestions}
+          isLoading={isLoading}
+          onInputChange={onInputChange}
+          {...extra}
+        />
+      )}
+    />
+  );
+
   return (
     <>
-      {/* City */}
-      <FormField
-        control={form.control}
-        name="city"
-        render={({ field }) => (
-          <AutocompleteInput
-            field={field}
-            form={form}
-            label="Місто"
-            placeholder="Введіть місто"
-            suggestions={citySuggestions}
-            isLoading={isLoadingCities}
-            onInputChange={debouncedFetchCity}
-            onSelect={(value) => {
-              const ref = updatedCityRefs.get(value);
-              if (ref) {
-                setCurrentCityRef(ref);
-              }
-            }}
-          />
-        )}
-      />
-
-      {/* Address */}
-      <FormField
-        control={form.control}
-        name="address"
-        render={({ field }) => (
-          <AutocompleteInput
-            field={field}
-            form={form}
-            label="Адреса"
-            placeholder="Введіть вулицю"
-            suggestions={addressSuggestions}
-            isLoading={isLoadingAddresses}
-            onInputChange={debouncedFetchAddress}
-          />
-        )}
-      />
-
-      {/* Post Office */}
-      <FormField
-        control={form.control}
-        name="post_office"
-        render={({ field }) => (
-          <AutocompleteInput
-            field={field}
-            form={form}
-            label="Відділення Нової Пошти"
-            placeholder="Виберіть відділення"
-            suggestions={warehouseSuggestions}
-            isLoading={isLoadingWarehouses}
-            onInputChange={debouncedFetchWarehouse}
-          />
-        )}
-      />
+      {renderField("city", "Місто", "Введіть місто", cityAuto.suggestions, cityAuto.isLoading, debouncedCity, {
+        onSelect: (value) => {
+          setCurrentCityRef(cityAuto.cityRefs.get(value) || null);
+        },
+      })}
+      {renderField(
+        "address",
+        "Адреса",
+        "Введіть вулицю",
+        addressAuto.suggestions,
+        addressAuto.isLoading,
+        debouncedAddress
+      )}
+      {renderField(
+        "post_office",
+        "Відділення Нової Пошти",
+        "Виберіть відділення",
+        warehouseAuto.suggestions,
+        warehouseAuto.isLoading,
+        debouncedWarehouse
+      )}
     </>
   );
 };

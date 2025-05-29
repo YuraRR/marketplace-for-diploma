@@ -66,7 +66,7 @@ export const ProductPage = ({ product }: { product: Product }) => {
   };
 
   return (
-    <section className="flex flex-col gap-10 w-full mx-auto bg-white rounded-lg shadow-lg md:flex-row p-[30px]">
+    <section className="flex flex-col gap-10 w-full min-h-[600px] mx-auto bg-white rounded-lg shadow-lg md:flex-row p-[30px]">
       <picture className="max-w-[450px] max-h-[450px] p-6">
         <Image
           src={product.image_url || "/placeholder-image.jpg"}
@@ -81,17 +81,6 @@ export const ProductPage = ({ product }: { product: Product }) => {
         <h1 className="mt-2 text-2xl font-bold">{product.name}</h1>
         <p className="text-2xl font-semibold">{formatPrice(price)}</p>
 
-        <ProductAvailability availability={product.availability} />
-        <div className="flex items-center gap-4 mt-4">
-          <QuantitySelector quantity={quantity} onQuantityChange={handleQuantityChange} min={1} max={100} />
-          <Button color="green" onClick={handleAddToCart} size={"xl"}>
-            <FontAwesomeIcon icon={faCartShopping} className="mr-1 size-4" />
-            <span>Додати у кошик</span>
-          </Button>
-        </div>
-
-        <Separator />
-
         <ul className="mt-4 space-y-2">
           <li>
             <b>Опис:</b>
@@ -102,6 +91,21 @@ export const ProductPage = ({ product }: { product: Product }) => {
             <span className="ml-1 text-light-gray">{product.specs}</span>
           </li>
         </ul>
+
+        <ProductAvailability availability={product.availability} />
+        <div className="flex items-center gap-4 mt-4">
+          <QuantitySelector quantity={quantity} onQuantityChange={handleQuantityChange} min={1} max={100} />
+          <Button color="green" onClick={handleAddToCart} size={"xl"}>
+            <FontAwesomeIcon icon={faCartShopping} className="mr-1 size-4" />
+            <span>Додати у кошик</span>
+          </Button>
+        </div>
+
+        <Separator />
+        <div className="flex flex-col gap-4 mt-4">
+          <span className="text-xs text-light-gray">Гарантовано безпечне оформлення замовлення</span>
+          <Image src={"/images/paymants.png"} alt="paymants" width={300} height={28} />
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 max-w-[300px] w-full">

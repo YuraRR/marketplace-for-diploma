@@ -1,5 +1,7 @@
+import { FormData } from "@/types/userForm.types";
 import { faCheck, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { UseFormReturn } from "react-hook-form";
 
 type Section = {
   id: string;
@@ -8,11 +10,11 @@ type Section = {
   icon: IconDefinition;
 };
 
-export const SectionTitle = ({ section, form }: { section: Section; form: any }) => {
+export const SectionTitle = ({ section, form }: { section: Section; form: UseFormReturn<FormData> }) => {
   const formValues = form.watch();
   const isSectionComplete = (fields: string[]) =>
     fields.every((field) => {
-      const value = formValues[field];
+      const value = formValues[field as keyof FormData];
       return value && value.trim().length > 0;
     });
   return (

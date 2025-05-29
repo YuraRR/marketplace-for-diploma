@@ -10,17 +10,9 @@ interface DropdownButtonProps extends React.HTMLProps<HTMLDivElement> {
   };
   className?: string;
   isFocused: boolean;
-  setIsFocused: (value: boolean) => void;
-  closeBackdrop: () => void;
 }
 
-export const DropdownButton = ({
-  item,
-  isFocused,
-  setIsFocused,
-  closeBackdrop,
-  ...props
-}: DropdownButtonProps) => {
+export const DropdownButton = ({ item, isFocused, ...props }: DropdownButtonProps) => {
   const handleButtonClick = (e: React.MouseEvent) => {
     if (item.subMenu.length > 0) {
       e.preventDefault();

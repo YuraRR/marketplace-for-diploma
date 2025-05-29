@@ -32,9 +32,10 @@ export const useAutocomplete = (type: "city" | "street" | "warehouse", cityRef?:
         });
         const data = await response.json();
         console.log("City API response:", data);
-        const cities = data.data?.[0]?.Addresses || [];
-        setCityRefs(new Map(cities.map((addr: any) => [addr.Present, addr.Ref])));
-        setSuggestions(cities.map((addr: any) => addr.Present));
+        type CityAddress = { Present: string; Ref: string };
+        const cities: CityAddress[] = data.data?.[0]?.Addresses || [];
+        setCityRefs(new Map(cities.map((addr: CityAddress) => [addr.Present, addr.Ref])));
+        setSuggestions(cities.map((addr: CityAddress) => addr.Present));
       } else if (type === "street" && cityRef) {
         console.log("Fetching streets for cityRef:", cityRef);
         const response = await fetch(baseUrl, {
@@ -53,7 +54,7 @@ export const useAutocomplete = (type: "city" | "street" | "warehouse", cityRef?:
         });
         const data = await response.json();
         console.log("Street API response:", data);
-        setSuggestions(data.data[0]?.Addresses.map((street: any) => street.Present) || []);
+        setSuggestions(data.data[0]?.Addresses.map((street: { Present: string }) => street.Present) || []);
       } else if (type === "warehouse" && cityRef) {
         const response = await fetch(baseUrl, {
           method: "POST",
@@ -72,7 +73,7 @@ export const useAutocomplete = (type: "city" | "street" | "warehouse", cityRef?:
         });
         const data = await response.json();
         console.log("Warehouse API response:", data);
-        setSuggestions(data.data?.map((warehouse: any) => warehouse.Description) || []);
+        setSuggestions(data.data?.map((warehouse: { Description: string }) => warehouse.Description) || []);
       }
     } catch (error) {
       console.error(`Error fetching ${type} suggestions:`, error);

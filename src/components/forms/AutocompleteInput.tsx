@@ -3,6 +3,23 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
 // Компонент для поля з автодоповненням
+interface AutocompleteInputProps {
+  field: {
+    name: string;
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+    ref?: React.Ref<HTMLInputElement>;
+  };
+  form: { setValue: (name: string, value: string) => void };
+  label: string;
+  placeholder: string;
+  suggestions: string[];
+  isLoading: boolean;
+  onInputChange: (value: string) => void;
+  onSelect?: (value: string) => void;
+}
+
 export const AutocompleteInput = ({
   field,
   form,
@@ -12,16 +29,7 @@ export const AutocompleteInput = ({
   isLoading,
   onInputChange,
   onSelect,
-}: {
-  field: any;
-  form: any;
-  label: string;
-  placeholder: string;
-  suggestions: string[];
-  isLoading: boolean;
-  onInputChange: (value: string) => void;
-  onSelect?: (value: string) => void;
-}) => {
+}: AutocompleteInputProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <FormItem>
