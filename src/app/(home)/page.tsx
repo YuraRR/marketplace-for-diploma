@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { PromoImagesBlock } from "@/app/home/components/PromoImagesBlock";
-import { CategoriesList } from "@/app/home/components/CategoriesList";
+import { PromoImagesBlock } from "@/app/(home)/components/PromoImagesBlock";
+import { CategoriesList } from "@/app/(home)/components/CategoriesList";
 import { ProductBrandLogo } from "@/app/product/[productName]/components/ProductBrandLogo";
 
 export default async function Main() {

@@ -17,7 +17,7 @@ export const PromoImagesBlock = () => {
         >
           <div className="m-3">
             <h2 className="text-3xl text-white">
-              <b>Noise Cancelling</b> <br /> <span className="font-light">Headphone</span>
+              <b>Noise Cancelling</b> <br /> <span className="font-light">Headphones</span>
             </h2>
 
             <p className="mt-4 max-w-[160px] leading-5 ml-6  text-xs text-white">
